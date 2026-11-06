@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Planificador de Tareas con temática del País de las Maravillas: crea, organiza y completa tus proyectos.">
+  <meta name="theme-color" content="#1c1038">
+  <title>Planificador de Tareas | País de las Maravillas</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🎩%3C/text%3E%3C/svg%3E">
+
+  <!-- Bootstrap 5 y tipografías -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;0,800;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Partículas doradas y destellos del cursor -->
+  <canvas id="destellos" aria-hidden="true"></canvas>
+
+  <!-- Escena de fondo: madriguera, objetos flotantes y piso de ajedrez -->
+  <div class="escena" aria-hidden="true">
+    <div class="capa" data-depth="0.02"><span class="anillo a1"></span><span class="anillo a2"></span><span class="anillo a3"></span></div>
+    <div class="capa" data-depth="0.05">
+      <span class="flota f1">♠</span><span class="flota f2">♥</span>
+      <span class="flota f3">♣</span><span class="flota f4">♦</span>
+      <span class="flota f5">🍄</span><span class="flota f6">🗝️</span>
+      <span class="flota f7">🫖</span><span class="flota f8">⏰</span>
+      <span class="flota f9">🌹</span><span class="flota f10">🐇</span>
+    </div>
+    <div class="piso"></div>
+  </div>
+
+  <!-- Barra de navegación -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top barra">
+    <div class="container">
+      <a class="navbar-brand marca" href="#inicio">🎩 Planificador <span>de Maravillas</span></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal"
+              aria-controls="menuPrincipal" aria-expanded="false" aria-label="Abrir menú">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menuPrincipal">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+          <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link" href="#te">Hora del té</a></li>
+          <li class="nav-item"><a class="nav-link" href="#nueva-tarea">Nueva tarea</a></li>
+          <li class="nav-item"><a class="nav-link" href="#mis-tareas">Mis tareas</a></li>
+          <li class="nav-item d-flex flex-wrap align-items-center gap-2 mt-2 mt-lg-0">
+            <button id="musicToggleBtn" class="btn btn-sm btn-musica" type="button" aria-pressed="false">🎵 Música</button>
+            <select id="trackSelect" class="form-select form-select-sm selector-pista" aria-label="Elegir melodía">
+              <option value="3" selected>Piano sereno</option>
+              <option value="4">Piano alegre</option>
+              <option value="5">Violín soñador</option>
+              <option value="6">Violín festivo</option>
+              <option value="0">Vals del té</option>
+              <option value="1">Madriguera</option>
+              <option value="2">Jardín de rosas</option>
+            </select>
+            <input id="volumeRange" type="range" class="form-range volumen" min="0" max="100" value="35" aria-label="Volumen">
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- HERO -->
+    <section id="inicio" class="hero">
+      <div class="container">
+        <div class="row align-items-center gy-5 gx-lg-5">
+          <div class="col-lg-7 text-center text-lg-start revelar">
+            <p class="etiqueta">Tu madriguera de ideas</p>
+            <h1 class="titulo-hero">Cae por la madriguera y <em>organiza tus maravillas</em></h1>
+            <p class="lead texto-suave">Cada gran proyecto empieza con una pequeña tarea. Anótala, ponle fecha y
+              avanza paso a paso. Aquí hasta lo imposible cabe en tu lista.</p>
+            <div class="d-flex flex-wrap gap-3 justify-content-center justify-content-lg-start">
+              <a href="#nueva-tarea" class="btn btn-dorado btn-lg">✨ Crear nueva aventura</a>
+              <a href="#mis-tareas" class="btn btn-contorno btn-lg">Ver mis tareas</a>
+            </div>
+          </div>
+
+          <!-- Rueda 3D de cartas -->
+          <div class="col-lg-5 revelar">
+            <div class="escenario-3d" aria-hidden="true">
+              <div class="rueda">
+                <div class="carta-3d c1"><b>♥</b><span>Sueña</span><b>♥</b></div>
+                <div class="carta-3d c2"><b>♦</b><span>Crea</span><b>♦</b></div>
+                <div class="carta-3d c3"><b>♠</b><span>Avanza</span><b>♠</b></div>
+                <div class="carta-3d c4"><b>♣</b><span>Logra</span><b>♣</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESUMEN -->
+    <section class="resumen" aria-label="Resumen de tareas">
+      <div class="container revelar">
+        <div class="row g-3 text-center">
+          <div class="col-6 col-md-3"><div class="dato tilt"><span id="statTotal">0</span><small>Total</small></div></div>
+          <div class="col-6 col-md-3"><div class="dato tilt"><span id="statPendiente">0</span><small>Pendientes</small></div></div>
+          <div class="col-6 col-md-3"><div class="dato tilt"><span id="statProgreso">0</span><small>En progreso</small></div></div>
+          <div class="col-6 col-md-3"><div class="dato tilt"><span id="statCompletada">0</span><small>Completadas</small></div></div>
+        </div>
+        <div class="progress barra-avance mt-4" role="progressbar" aria-label="Avance general" aria-valuemin="0" aria-valuemax="100">
+          <div id="avanceBar" class="progress-bar" style="width: 0%">0%</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HORA DEL TÉ: reloj y frases -->
+    <section id="te" class="seccion">
+      <div class="container">
+        <h2 class="titulo-seccion text-center revelar">Hora del té</h2>
+        <p class="text-center texto-suave mb-5 revelar">Aquí siempre es buen momento para animarte.</p>
+        <div class="row gy-5 gx-lg-5 align-items-center justify-content-center">
+          <div class="col-md-5 col-lg-4 text-center revelar">
+            <div class="reloj tilt" role="img" aria-label="Reloj con la hora actual">
+              <svg viewBox="0 0 200 200" width="100%">
+                <circle cx="100" cy="100" r="94" class="reloj-borde"/>
+                <circle cx="100" cy="100" r="84" class="reloj-cara"/>
+                <g id="relojMarcas"></g>
+                <line id="manecillaHora" x1="100" y1="100" x2="100" y2="58" class="mano mano-h"/>
+                <line id="manecillaMin" x1="100" y1="100" x2="100" y2="38" class="mano mano-m"/>
+                <line id="manecillaSeg" x1="100" y1="112" x2="100" y2="30" class="mano mano-s"/>
+                <circle cx="100" cy="100" r="6" class="reloj-centro"/>
+              </svg>
+            </div>
+            <p class="mt-3 texto-suave" id="horaTexto">Cargando la hora…</p>
+          </div>
+          <div class="col-md-7 col-lg-6 revelar">
+            <article class="frase-card tilt" id="fraseCard">
+              <span class="frase-tipo" id="fraseTipo">Ánimo</span>
+              <blockquote class="frase-texto" id="fraseTexto">Cargando una idea maravillosa…</blockquote>
+              <button id="nuevaFraseBtn" class="btn btn-sm btn-contorno" type="button">🔄 Otra frase</button>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FORMULARIO -->
+    <section id="nueva-tarea" class="seccion">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-8 col-xl-7">
+            <h2 class="titulo-seccion text-center revelar">Nueva tarea</h2>
+            <p class="text-center texto-suave mb-4 revelar">Un frasco dice «Bébeme». Tú solo escribe tu próxima aventura. 🧪</p>
+
+            <!-- Alerta de error (oculta al inicio) -->
+            <div id="formAlert" class="alert alert-danger d-none" role="alert" aria-live="assertive">
+              <strong>¡Ups, algo falta en el sombrero! 🎩</strong>
+              <ul id="formAlertList" class="mb-0 mt-2"></ul>
+            </div>
+
+            <form id="taskForm" class="formulario revelar" novalidate>
+              <div class="mb-3">
+                <label for="newTaskNameInput" class="form-label">Nombre de la tarea</label>
+                <input type="text" id="newTaskNameInput" class="form-control" maxlength="60" placeholder="Ej: Terminar el informe de la clase">
+                <div class="invalid-feedback">El nombre no puede estar vacío.</div>
+              </div>
+
+              <div class="mb-3">
+                <label for="newTaskDescriptionInput" class="form-label">Descripción</label>
+                <textarea id="newTaskDescriptionInput" class="form-control" rows="3" maxlength="200" placeholder="¿Qué necesitas hacer exactamente?"></textarea>
+                <div class="invalid-feedback">La descripción no puede estar vacía.</div>
+              </div>
+
+              <div class="row g-3 mb-4">
+                <div class="col-sm-6">
+                  <label for="newTaskDateInput" class="form-label">Fecha de entrega</label>
+                  <input type="date" id="newTaskDateInput" class="form-control">
+                  <div class="invalid-feedback">Selecciona una fecha de entrega.</div>
+                </div>
+                <div class="col-sm-6">
+                  <label for="newTaskStatusSelect" class="form-label">Estado</label>
+                  <select id="newTaskStatusSelect" class="form-select">
+                    <option value="" selected>Elige una opción…</option>
+                    <option value="pendiente">Pendiente</option>
+                    <option value="progreso">En progreso</option>
+                    <option value="completada">Completada</option>
+                  </select>
+                  <div class="invalid-feedback">Debes seleccionar un estado.</div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-dorado btn-lg w-100">🗝️ Guardar tarea</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LISTA Y TARJETAS -->
+    <section id="mis-tareas" class="seccion">
+      <div class="container">
+        <h2 class="titulo-seccion text-center revelar">Mis tareas</h2>
+        <p class="text-center texto-suave mb-4 revelar">Filtra por estado y elige cómo verlas.</p>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+          <ul class="nav nav-pills filtros" id="filtroTareas">
+            <li class="nav-item"><button class="nav-link active" data-filtro="todas" type="button">Todas</button></li>
+            <li class="nav-item"><button class="nav-link" data-filtro="pendiente" type="button">♥ Pendientes</button></li>
+            <li class="nav-item"><button class="nav-link" data-filtro="progreso" type="button">♦ En progreso</button></li>
+            <li class="nav-item"><button class="nav-link" data-filtro="completada" type="button">♠ Completadas</button></li>
+          </ul>
+          <div class="btn-group" role="group" aria-label="Cambiar vista">
+            <button type="button" id="vistaTarjetasBtn" class="btn btn-contorno active">▦ Tarjetas</button>
+            <button type="button" id="vistaListaBtn" class="btn btn-contorno">☰ Lista</button>
+          </div>
+        </div>
+
+        <!-- Componente: tarjetas de tarea -->
+        <div id="taskCards" class="row g-4"></div>
+
+        <!-- Componente: lista de tareas -->
+        <ul id="taskList" class="list-group lista-tareas d-none"></ul>
+
+        <p id="listaVacia" class="vacio d-none">Aún no hay tareas por aquí. ¡Crea la primera y empieza a soñar! 🌙</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- TU MÚSICA -->
+  <section id="tu-musica" class="seccion">
+    <div class="container">
+      <h2 class="titulo-seccion text-center revelar">Tu música</h2>
+      <p class="text-center texto-suave mb-4 revelar">Escucha tus canciones favoritas mientras planeas tus tareas.</p>
+      <div class="row justify-content-center">
+        <div class="col-lg-8 revelar">
+          <div class="formulario">
+            <p class="mb-3">Abre tus artistas y bandas sonoras en Spotify:</p>
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <a class="btn btn-contorno" target="_blank" rel="noopener noreferrer"
+                 href="https://open.spotify.com/search/Taylor%20Swift">🎤 Taylor Swift</a>
+              <a class="btn btn-contorno" target="_blank" rel="noopener noreferrer"
+                 href="https://open.spotify.com/search/Alice%20in%20Wonderland%20soundtrack">🎩 Alicia en el País de las Maravillas</a>
+            </div>
+            <label for="archivoMusica" class="form-label">O reproduce un archivo de audio de tu computador</label>
+            <input type="file" id="archivoMusica" class="form-control" accept="audio/*">
+            <p id="nombrePista" class="small texto-suave mt-2 mb-2"></p>
+            <audio id="audioPropio" class="w-100" controls hidden></audio>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pie">
+    <div class="container text-center">
+      <p class="mb-1">“Empieza por donde estás, usa lo que tienes y sigue avanzando.”</p>
+
+      <p class="autora-pie">Autora: <strong>Valentina Bucuru Malambo</strong></p>
+
+      <small>Planificador de Tareas · 2026</small>
+    </div>
+  </footer>
+
+  <!-- Toast de confirmación -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="toastOk" class="toast align-items-center text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body" id="toastTexto">Tarea guardada.</div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

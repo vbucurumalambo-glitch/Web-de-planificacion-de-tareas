@@ -1,0 +1,566 @@
+/* ==========================================================
+   Planificador de Tareas · País de las Maravillas
+   ========================================================== */
+
+:root {
+  --noche: #1c1038;
+  --noche-2: #2d1b5e;
+  --violeta: #7b4bd6;
+  --turquesa: #35d0c3;
+  --rosa: #ff6fb1;
+  --oro: #ffc857;
+  --crema: #fff7e8;
+  --texto: #f4ecff;
+  --texto-suave: #cfc2ee;
+  --vidrio: rgba(255, 255, 255, 0.09);
+  --borde: rgba(255, 255, 255, 0.18);
+  --radio: 20px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+body {
+  margin: 0;
+  font-family: 'Nunito', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--texto);
+  background:
+    radial-gradient(circle at 15% 10%, rgba(123, 75, 214, 0.55), transparent 45%),
+    radial-gradient(circle at 85% 30%, rgba(53, 208, 195, 0.25), transparent 40%),
+    linear-gradient(160deg, var(--noche), var(--noche-2) 60%, #3a1d6e);
+  background-attachment: fixed;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, .marca { font-family: 'Playfair Display', Georgia, serif; }
+
+a { color: var(--oro); }
+
+/* ---------- Escena de fondo (profundidad) ---------- */
+.escena {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  perspective: 900px;
+}
+
+.capa {
+  position: absolute;
+  inset: 0;
+  transition: transform 0.15s ease-out;
+}
+
+.anillo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border: 2px solid rgba(255, 200, 87, 0.18);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: latido 9s ease-in-out infinite;
+}
+.a1 { width: 40vmin; height: 40vmin; }
+.a2 { width: 70vmin; height: 70vmin; animation-delay: -3s; border-color: rgba(53, 208, 195, 0.15); }
+.a3 { width: 105vmin; height: 105vmin; animation-delay: -6s; border-color: rgba(255, 111, 177, 0.12); }
+
+@keyframes latido {
+  0%, 100% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.5; }
+  50% { transform: translate(-50%, -50%) scale(1.06); opacity: 1; }
+}
+
+.flota {
+  position: absolute;
+  font-size: 2.2rem;
+  opacity: 0.35;
+  animation: flotar 8s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(255, 200, 87, 0.4));
+}
+.f1 { top: 12%; left: 8%; color: var(--oro); }
+.f2 { top: 20%; right: 10%; color: var(--rosa); animation-delay: -2s; }
+.f3 { top: 62%; left: 5%; color: var(--turquesa); animation-delay: -4s; }
+.f4 { top: 75%; right: 7%; color: var(--oro); animation-delay: -1s; }
+.f5 { top: 45%; left: 92%; animation-delay: -3s; }
+.f6 { top: 88%; left: 30%; animation-delay: -5s; }
+.f7 { top: 8%; left: 55%; animation-delay: -6s; }
+.f8 { top: 55%; left: 48%; animation-delay: -7s; font-size: 1.6rem; }
+
+@keyframes flotar {
+  0%, 100% { transform: translateY(0) rotate(-6deg); }
+  50% { transform: translateY(-26px) rotate(8deg); }
+}
+
+main, footer, .barra { position: relative; z-index: 1; }
+
+/* ---------- Navegación ---------- */
+.barra {
+  background: rgba(28, 16, 56, 0.78);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--borde);
+}
+.marca { font-weight: 800; letter-spacing: 0.3px; }
+.marca span { color: var(--oro); font-style: italic; }
+.nav-link { color: var(--texto) !important; font-weight: 600; }
+.nav-link:hover { color: var(--oro) !important; }
+
+.volumen { width: 90px; accent-color: var(--oro); }
+
+/* ---------- Botones ---------- */
+.btn { border-radius: 999px; font-weight: 700; transition: transform 0.2s, box-shadow 0.2s; }
+.btn:hover { transform: translateY(-3px); }
+
+.btn-dorado {
+  background: linear-gradient(135deg, var(--oro), #ff9f43);
+  color: #3a2200;
+  border: 0;
+  box-shadow: 0 8px 22px rgba(255, 159, 67, 0.35);
+}
+.btn-dorado:hover { color: #3a2200; box-shadow: 0 12px 28px rgba(255, 159, 67, 0.5); }
+
+.btn-contorno {
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  background: var(--vidrio);
+}
+.btn-contorno:hover, .btn-contorno.active {
+  color: #fff;
+  border-color: var(--turquesa);
+  background: rgba(53, 208, 195, 0.2);
+}
+
+.btn-musica {
+  color: var(--texto);
+  border: 2px solid var(--borde);
+  background: var(--vidrio);
+}
+.btn-musica.sonando {
+  border-color: var(--oro);
+  background: rgba(255, 200, 87, 0.2);
+  animation: latido-suave 1.6s ease-in-out infinite;
+}
+@keyframes latido-suave { 50% { box-shadow: 0 0 18px rgba(255, 200, 87, 0.6); } }
+
+/* ---------- Hero ---------- */
+.hero { padding: 8.5rem 0 3rem; }
+
+.etiqueta {
+  display: inline-block;
+  padding: 0.3rem 1rem;
+  border-radius: 999px;
+  background: rgba(53, 208, 195, 0.18);
+  border: 1px solid rgba(53, 208, 195, 0.5);
+  color: var(--turquesa);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.titulo-hero {
+  font-size: clamp(2.1rem, 5.5vw, 3.7rem);
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 1rem 0;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+.titulo-hero em {
+  color: var(--oro);
+  background: linear-gradient(90deg, var(--oro), var(--rosa));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.texto-suave { color: var(--texto-suave); }
+
+/* ---------- Tilt 3D ---------- */
+.tilt {
+  transform-style: preserve-3d;
+  transition: transform 0.18s ease-out, box-shadow 0.3s;
+  will-change: transform;
+}
+
+/* ---------- Tarjeta de frase ---------- */
+.frase-card {
+  padding: 2rem;
+  border-radius: var(--radio);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--borde);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(8px);
+  text-align: center;
+}
+.frase-tipo {
+  display: inline-block;
+  padding: 0.2rem 0.9rem;
+  border-radius: 999px;
+  background: var(--rosa);
+  color: #3a0020;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transform: translateZ(30px);
+}
+.frase-texto {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.35rem;
+  margin: 1.2rem 0 1.5rem;
+  min-height: 5.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s;
+}
+.frase-texto.saliendo { opacity: 0; }
+
+/* ---------- Resumen ---------- */
+.resumen { padding: 1rem 0 2rem; }
+.dato {
+  padding: 1.2rem 0.5rem;
+  border-radius: var(--radio);
+  background: var(--vidrio);
+  border: 1px solid var(--borde);
+}
+.dato span { display: block; font-family: 'Playfair Display', serif; font-size: 2.3rem; font-weight: 800; color: var(--oro); line-height: 1.1; }
+.dato small { color: var(--texto-suave); font-weight: 600; }
+
+.barra-avance { height: 16px; border-radius: 999px; background: rgba(255, 255, 255, 0.12); }
+.barra-avance .progress-bar {
+  background: linear-gradient(90deg, var(--turquesa), var(--oro), var(--rosa));
+  color: #2a1700;
+  font-weight: 700;
+  font-size: 0.75rem;
+  transition: width 0.6s ease;
+}
+
+/* ---------- Secciones ---------- */
+.seccion { padding: 3.5rem 0; }
+.titulo-seccion { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 800; }
+.titulo-seccion::after {
+  content: '';
+  display: block;
+  width: 90px;
+  height: 4px;
+  margin: 0.6rem auto 0;
+  border-radius: 4px;
+  background: repeating-linear-gradient(90deg, var(--oro) 0 15px, var(--noche) 15px 30px);
+}
+
+/* ---------- Formulario ---------- */
+.formulario {
+  padding: 2rem;
+  border-radius: var(--radio);
+  background: var(--vidrio);
+  border: 1px solid var(--borde);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
+}
+.form-label { font-weight: 700; color: var(--crema); }
+.form-control, .form-select {
+  background-color: rgba(255, 255, 255, 0.95);
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 0.7rem 1rem;
+  color: #2a1a4a;
+}
+.form-control:focus, .form-select:focus {
+  border-color: var(--turquesa);
+  box-shadow: 0 0 0 0.25rem rgba(53, 208, 195, 0.3);
+}
+.invalid-feedback { color: #ffb3c7; font-weight: 600; }
+
+.alert-danger {
+  border-radius: 16px;
+  background: rgba(255, 90, 120, 0.18);
+  border: 1px solid rgba(255, 120, 150, 0.6);
+  color: #ffd6e0;
+}
+
+/* ---------- Tarjeta de tarea ---------- */
+.tarea-card {
+  height: 100%;
+  padding: 1.4rem;
+  border-radius: var(--radio);
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--borde);
+  border-top: 5px solid var(--violeta);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.tarea-card.est-pendiente { border-top-color: var(--rosa); }
+.tarea-card.est-progreso { border-top-color: var(--oro); }
+.tarea-card.est-completada { border-top-color: var(--turquesa); }
+.tarea-card.est-completada .tarea-nombre { text-decoration: line-through; opacity: 0.7; }
+
+.tarea-nombre { font-size: 1.25rem; font-weight: 800; margin: 0; overflow-wrap: anywhere; }
+.tarea-desc { color: var(--texto-suave); margin: 0; flex-grow: 1; overflow-wrap: anywhere; }
+.tarea-fecha { font-size: 0.92rem; color: var(--crema); }
+.tarea-acciones { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.4rem; }
+
+.badge-estado { font-weight: 700; padding: 0.4em 0.8em; border-radius: 999px; }
+.badge-pendiente { background: var(--rosa); color: #3a0020; }
+.badge-progreso { background: var(--oro); color: #3a2200; }
+.badge-completada { background: var(--turquesa); color: #00322e; }
+.badge-atrasada { background: #ff4d6d; color: #fff; }
+
+/* ---------- Lista de tareas ---------- */
+.lista-tareas { gap: 0.7rem; display: flex; flex-direction: column; }
+.lista-tareas .list-group-item {
+  background: var(--vidrio);
+  color: var(--texto);
+  border: 1px solid var(--borde);
+  border-radius: 16px !important;
+  padding: 1rem 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+.lista-tareas .item-info { flex: 1 1 260px; min-width: 0; }
+.lista-tareas .item-info strong { overflow-wrap: anywhere; }
+.lista-tareas .est-completada strong { text-decoration: line-through; opacity: 0.7; }
+
+/* ---------- Filtros ---------- */
+.filtros .nav-link {
+  color: var(--texto) !important;
+  border-radius: 999px;
+  background: var(--vidrio);
+  border: 1px solid var(--borde);
+  margin-right: 0.4rem;
+}
+.filtros .nav-link.active {
+  background: linear-gradient(135deg, var(--violeta), var(--rosa));
+  color: #fff !important;
+  border-color: transparent;
+}
+
+.vacio {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  border: 2px dashed var(--borde);
+  border-radius: var(--radio);
+  color: var(--texto-suave);
+}
+
+/* ---------- Animación de aparición ---------- */
+.aparece { animation: aparece 0.5s ease both; }
+@keyframes aparece {
+  from { opacity: 0; transform: translateY(24px) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ---------- Pie ---------- */
+.pie {
+  padding: 2.5rem 0;
+  margin-top: 2rem;
+  background: rgba(0, 0, 0, 0.25);
+  border-top: 1px solid var(--borde);
+  color: var(--texto-suave);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 576px) {
+  body { font-size: 1rem; }
+  .hero { padding-top: 6.5rem; }
+  .formulario { padding: 1.25rem; }
+  .flota { font-size: 1.5rem; }
+  .volumen { width: 70px; }
+}
+
+/* Respeta a quien prefiere menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  html { scroll-behavior: auto; }
+}
+
+/* ==========================================================
+   Capa de diseño 2: profundidad, naipes, reloj y destellos
+   ========================================================== */
+
+#destellos {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.f9 { top: 35%; left: 20%; animation-delay: -2.5s; }
+.f10 { top: 70%; right: 22%; animation-delay: -4.5s; font-size: 2.6rem; }
+
+/* ---------- Piso de ajedrez en perspectiva ---------- */
+.piso {
+  position: absolute;
+  left: -50%;
+  width: 200%;
+  bottom: -30vh;
+  height: 70vh;
+  background:
+    conic-gradient(rgba(255, 255, 255, 0.07) 25%, rgba(0, 0, 0, 0.18) 0 50%,
+                   rgba(255, 255, 255, 0.07) 0 75%, rgba(0, 0, 0, 0.18) 0) 0 0 / 120px 120px;
+  transform: perspective(500px) rotateX(62deg);
+  transform-origin: top center;
+  mask-image: linear-gradient(to bottom, transparent, #000 40%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%);
+  animation: avanzarPiso 12s linear infinite;
+}
+@keyframes avanzarPiso { to { background-position: 0 120px; } }
+
+/* ---------- Rueda 3D de cartas ---------- */
+.escenario-3d {
+  height: 360px;
+  perspective: 1100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rueda {
+  position: relative;
+  width: 150px;
+  height: 220px;
+  transform-style: preserve-3d;
+  animation: girar 22s linear infinite;
+}
+.escenario-3d:hover .rueda { animation-play-state: paused; }
+
+.carta-3d {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.4rem;
+  border-radius: 14px;
+  background: linear-gradient(160deg, #fffaf0, #f3e3c3);
+  border: 3px solid var(--oro);
+  box-shadow: 0 0 26px rgba(255, 200, 87, 0.35);
+  color: #2a1a4a;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.carta-3d b { font-size: 1.8rem; line-height: 1; }
+.carta-3d span { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 800; }
+.c1 { transform: rotateY(0deg) translateZ(190px); }
+.c2 { transform: rotateY(90deg) translateZ(190px); }
+.c3 { transform: rotateY(180deg) translateZ(190px); }
+.c4 { transform: rotateY(270deg) translateZ(190px); }
+.c1 b, .c2 b { color: #d6254c; }
+
+@keyframes girar {
+  from { transform: rotateX(-8deg) rotateY(0deg); }
+  to { transform: rotateX(-8deg) rotateY(360deg); }
+}
+
+/* ---------- Reloj ---------- */
+.reloj { max-width: 280px; margin: 0 auto; filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.45)); }
+.reloj-borde { fill: var(--oro); }
+.reloj-cara { fill: var(--crema); }
+.reloj-centro { fill: #3a1d6e; }
+.marca-hora { stroke: #3a1d6e; stroke-width: 3; stroke-linecap: round; }
+.marca-min { stroke: rgba(58, 29, 110, 0.4); stroke-width: 1.2; }
+.mano { stroke-linecap: round; }
+.mano-h { stroke: #3a1d6e; stroke-width: 6; }
+.mano-m { stroke: #3a1d6e; stroke-width: 4; }
+.mano-s { stroke: var(--rosa); stroke-width: 2; }
+
+/* ---------- Tarjeta de tarea tipo naipe ---------- */
+.tarea-card { position: relative; padding: 2rem 1.6rem; border-top-width: 1px; }
+.tarea-card::before {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.22);
+  border-radius: 14px;
+  pointer-events: none;
+}
+.palo {
+  position: absolute;
+  font-size: 1.35rem;
+  font-weight: 800;
+  line-height: 1;
+  transform: translateZ(25px);
+}
+.palo.tl { top: 14px; left: 16px; }
+.palo.br { bottom: 14px; right: 16px; transform: rotate(180deg) translateZ(25px); }
+.est-pendiente .palo { color: var(--rosa); }
+.est-progreso .palo { color: var(--oro); }
+.est-completada .palo { color: var(--turquesa); }
+.tarea-card.est-pendiente { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 0 40px rgba(255, 111, 177, 0.08); }
+.tarea-card.est-progreso { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 0 40px rgba(255, 200, 87, 0.08); }
+.tarea-card.est-completada { box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), inset 0 0 40px rgba(53, 208, 195, 0.1); }
+.tarea-card > * { position: relative; }
+
+/* ---------- Detalles extra ---------- */
+.selector-pista {
+  width: auto;
+  max-width: 150px;
+  background-color: rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+}
+
+.frase-card { position: relative; }
+.frase-card::before {
+  content: '“';
+  position: absolute;
+  top: -0.1em;
+  left: 0.35em;
+  font-family: 'Playfair Display', serif;
+  font-size: 6rem;
+  color: rgba(255, 200, 87, 0.35);
+  line-height: 1;
+}
+
+.barra-avance .progress-bar { box-shadow: 0 0 14px rgba(255, 200, 87, 0.6); }
+
+.btn-dorado { position: relative; overflow: hidden; }
+.btn-dorado::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-20deg);
+  transition: left 0.6s;
+}
+.btn-dorado:hover::after { left: 140%; }
+
+::selection { background: var(--rosa); color: #fff; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: var(--noche); }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--violeta), var(--rosa)); border-radius: 10px; }
+
+/* ---------- Aparición al hacer scroll ---------- */
+.revelar { opacity: 0; transform: translateY(40px) rotateX(8deg); transition: opacity 0.8s ease, transform 0.8s ease; }
+.revelar.visible { opacity: 1; transform: none; }
+
+@media (max-width: 576px) {
+  .escenario-3d { height: 300px; }
+  .rueda { width: 120px; height: 180px; }
+  .c1 { transform: rotateY(0deg) translateZ(150px); }
+  .c2 { transform: rotateY(90deg) translateZ(150px); }
+  .c3 { transform: rotateY(180deg) translateZ(150px); }
+  .c4 { transform: rotateY(270deg) translateZ(150px); }
+  .selector-pista { max-width: 130px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revelar { opacity: 1; transform: none; }
+}
+
+/* ---------- Créditos ---------- */
+.autora-pie { margin: 1rem 0; font-size: 1.15rem; color: var(--crema); }
+.autora-pie strong { font-family: 'Playfair Display', serif; color: var(--oro); }
+
+/* Títulos con color propio, sin depender del tema de Bootstrap */
+h1, h2, h3 { color: var(--texto); }
