@@ -8,6 +8,7 @@ Planificador de Tareas es una aplicación web responsive construida con HTML5, B
 - Tarea 1: wireframes implementados con Bootstrap.
 - Tarea 2: componente Tarjeta de Tarea y componente Lista de Tareas.
 - Tarea 3: validación del formulario con `validFormFieldInput(data)` y alertas de error.
+- Tarea 4: clase `TaskManager` (`js/taskManager.js`) y botón para marcar y desmarcar una tarea como completada.
 
 **Autora:** Valentina Bucuru Malambo
 
@@ -26,9 +27,11 @@ Planificador de Tareas es una aplicación web responsive construida con HTML5, B
 ## Estructura
 
 ```
+├── css/
+│   └── styles.css
+├── js/
+│   ├── index.js
+│   └── taskManager.js
 ├── index.html
-├── styles.css
-├── app.js
-├── GUIA-DE-ENTREGA.md
 └── README.md
 ```

@@ -564,3 +564,34 @@ main, footer, .barra { position: relative; z-index: 1; }
 
 /* Títulos con color propio, sin depender del tema de Bootstrap */
 h1, h2, h3 { color: var(--texto); }
+
+/* ---------- Tarea completada (Tarea 4 · Parte 2) ---------- */
+.tarea-card.est-completada {
+  background: linear-gradient(160deg, rgba(53, 208, 195, 0.22), rgba(53, 208, 195, 0.06));
+  border-color: rgba(53, 208, 195, 0.7);
+}
+.tarea-card.est-completada::after {
+  content: '✔';
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--turquesa);
+  color: #00322e;
+  font-weight: 800;
+  font-size: 0.95rem;
+}
+.tarea-card.est-completada .tarea-desc,
+.tarea-card.est-completada .tarea-fecha { opacity: 0.65; }
+
+.lista-tareas .est-completada {
+  background: rgba(53, 208, 195, 0.14);
+  border-color: rgba(53, 208, 195, 0.6);
+}
+
+.btn-completar:hover { border-color: var(--turquesa); }
+.btn-desmarcar { border-color: var(--turquesa); }

@@ -2,6 +2,7 @@
    Planificador de Tareas · app.js
    - Validación del formulario (validFormFieldInput)
    - Alertas de error, tarjetas y lista de tareas
+   - Marcar / desmarcar una tarea como completada
    - Frases de ánimo y música ambiental
    ========================================================== */
 
@@ -33,6 +34,9 @@ const vistaTarjetasBtn = document.querySelector('#vistaTarjetasBtn');
 const vistaListaBtn = document.querySelector('#vistaListaBtn');
 
 /* ---------- Estado de la aplicación ---------- */
+const taskManager = new TaskManager();
+console.log(taskManager.tasks);
+
 let tareas = cargarTareas();
 let filtroActual = 'todas';
 let vistaActual = 'tarjetas';
@@ -196,12 +200,11 @@ function eliminarTarea(id) {
   renderizar();
 }
 
-function avanzarEstado(id) {
-  const orden = ['pendiente', 'progreso', 'completada'];
+/** Interruptor: alterna una tarea entre "completada" y "pendiente". */
+function alternarCompletada(id) {
   const tarea = tareas.find(t => t.id === id);
   if (!tarea) return;
-  const siguiente = (orden.indexOf(tarea.status) + 1) % orden.length;
-  tarea.status = orden[siguiente];
+  tarea.status = tarea.status === 'completada' ? 'pendiente' : 'completada';
   guardarTareas();
   renderizar();
 }
@@ -250,7 +253,14 @@ function crearBoton(texto, clase, accion) {
 function crearAcciones(tarea) {
   const acciones = document.createElement('div');
   acciones.className = 'tarea-acciones';
-  acciones.appendChild(crearBoton('➜ Avanzar estado', 'btn-contorno', () => avanzarEstado(tarea.id)));
+  const completada = tarea.status === 'completada';
+  const alternar = crearBoton(
+    completada ? '↩ Desmarcar' : '✔ Completar',
+    completada ? 'btn-contorno btn-desmarcar' : 'btn-contorno btn-completar',
+    () => alternarCompletada(tarea.id)
+  );
+  alternar.setAttribute('aria-pressed', String(completada));
+  acciones.appendChild(alternar);
   acciones.appendChild(crearBoton('🗑 Eliminar', 'btn-contorno', () => eliminarTarea(tarea.id)));
   return acciones;
 }
