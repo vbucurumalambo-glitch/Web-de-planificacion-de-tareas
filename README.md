@@ -14,19 +14,20 @@ Planificador de Tareas es una aplicación web responsive construida con HTML5, B
 
 ## 2. Trello
 
-[Tablero del Sprint 1](PEGAR-AQUI-EL-ENLACE-DE-TRELLO)
+[Tablero del Sprint 1](https://trello.com/b/KWa4iQHu/planificador-de-tareas-sprint-1)
 
 ## 3. Figma
 
-[Wireframe del proyecto](PEGAR-AQUI-EL-ENLACE-DE-FIGMA)
+[Wireframe del proyecto](https://www.figma.com/design/Yws5WlZzn7VFcqH0tsV6Hf)
 
 ## 4. Demo
 
-[Proyecto publicado en GitHub Pages](PEGAR-AQUI-EL-ENLACE-DE-GITHUB-PAGES)
+[Proyecto publicado en GitHub Pages](https://vbucurumalambo-glitch.github.io/Web-de-planificacion-de-tareas/)
 
 ## Estructura
 
 ```
+Planificador-Tareas/
 ├── css/
 │   └── styles.css
 ├── js/
